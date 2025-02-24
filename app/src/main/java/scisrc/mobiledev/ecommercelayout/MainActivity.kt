@@ -7,22 +7,21 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import scisrc.mobiledev.ecommercelayout.databinding.ActivityMainBinding
-import scisrc.mobiledev.ecommercelayout.ui.HomeFragment
+import scisrc.mobiledev.ecommercelayout.ui.*
+import androidx.fragment.app.Fragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var drawerLayout: DrawerLayout
-    private lateinit var navController: NavController
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         // Setup toolbar
         setSupportActionBar(binding.toolbar)
-
-        // Initialize navigation
+        // Initialize DrawerLayout
         drawerLayout = binding.drawerLayout
 
         // Add hamburger icon
@@ -39,27 +38,26 @@ class MainActivity : AppCompatActivity() {
         // Handle NavigationView item clicks
         binding.navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_home -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, HomeFragment())
-                        .commit()
-                }
-
+                R.id.nav_home -> replaceFragment(HomeFragment())
+                R.id.nav_product_list -> replaceFragment(ProductFragment())
+                R.id.nav_basket -> replaceFragment(basketFragment())
+                R.id.nav_profile -> replaceFragment(ProfileFragment())
+                R.id.nav_favorite -> replaceFragment(FavoriteFragment())
             }
             drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
-
         // Load default fragment
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, HomeFragment())
-                .commit()
+            replaceFragment(HomeFragment())
             binding.navView.setCheckedItem(R.id.nav_home)
         }
-    }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+    // ฟังก์ชันเปลี่ยน Fragment
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
     }
 }
